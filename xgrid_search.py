@@ -1,4 +1,5 @@
-# last update: 03/09/2019
+# Copyright © 2018-2019 Bomsoo Brad Kim, All Rights Reserved.
+# Last Update : 04/14/2019
 import numpy as np
 import pandas as pd
 
