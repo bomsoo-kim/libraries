@@ -168,48 +168,48 @@ def xgrid_search_xgboost(train, test, features, target, params_schedule, mlmodel
 #     return test_pred, valid_score
     
 # cross validation 1: XGBoost
-# def user_defined_eval_function(train, test, features, target, mlmodel, eval_metric, MIN_MAX, predict_test_output = False):
-#     dtrain = xgb.DMatrix(train[features], label = train[target], missing = np.nan) # missing value handling: https://www.youtube.com/watch?v=cVqDguNWh4M
-#     cvoutp = xgb.cv(mlmodel.get_xgb_params(), dtrain, num_boost_round = 10000, verbose_eval =  False, 
-#                       nfold = 5, metrics = eval_metric, early_stopping_rounds = 50) # early_stopping_rounds
-#     mlmodel.set_params(n_estimators = cvoutp.shape[0]) # update n_estimator 
-#     train_score = cvoutp.tail(1)[cvoutp.columns[cvoutp.columns.str.contains('train-.+-mean', regex=True)]].squeeze()
-#     valid_score = cvoutp.tail(1)[cvoutp.columns[cvoutp.columns.str.contains('test-.+-mean', regex=True)]].squeeze()
+def user_defined_eval_function(train, test, features, target, mlmodel, eval_metric, MIN_MAX, predict_test_output = False):
+    dtrain = xgb.DMatrix(train[features], label = train[target], missing = np.nan) # missing value handling: https://www.youtube.com/watch?v=cVqDguNWh4M
+    cvoutp = xgb.cv(mlmodel.get_xgb_params(), dtrain, num_boost_round = 10000, verbose_eval =  False, 
+                      nfold = 5, metrics = eval_metric, early_stopping_rounds = 50) # early_stopping_rounds
+    mlmodel.set_params(n_estimators = cvoutp.shape[0]) # update n_estimator 
+    train_score = cvoutp.tail(1)[cvoutp.columns[cvoutp.columns.str.contains('train-.+-mean', regex=True)]].squeeze()
+    valid_score = cvoutp.tail(1)[cvoutp.columns[cvoutp.columns.str.contains('test-.+-mean', regex=True)]].squeeze()
 
-#     if predict_test_output == True:
-#         mlmodel.fit(train[features], train[target].values.ravel(), eval_metric = eval_metric) #Fit the algorithm on the data
-#         test_pred = mlmodel.predict(test[features])    
-#     else: 
-#         test_pred = []
-#     return test_pred, valid_score    
+    if predict_test_output == True:
+        mlmodel.fit(train[features], train[target].values.ravel(), eval_metric = eval_metric) #Fit the algorithm on the data
+        test_pred = mlmodel.predict(test[features])    
+    else: 
+        test_pred = []
+    return test_pred, valid_score    
     
 # cross validation 2: XGBoost, LightGBM
-def user_defined_eval_function(train, test, features, target, mlmodel, eval_metric, MIN_MAX, predict_test_output = False):
-#         folds = StratifiedKFold(n_splits=5, shuffle=False, random_state=2319) # cv n-fold
-    folds = KFold(n_splits=5, shuffle=False, random_state=2319) # cv n-fold
-    oof = np.zeros(len(train))
-    test_pred = np.zeros(len(test))
-    for n, (trn_idx, val_idx) in enumerate(folds.split(train[features].values, train[target].values)):
-        X_train, y_train = train.iloc[trn_idx][features], train.iloc[trn_idx][target].values.ravel()
-        X_valid, y_valid = train.iloc[val_idx][features], train.iloc[val_idx][target].values.ravel()
+# def user_defined_eval_function(train, test, features, target, mlmodel, eval_metric, MIN_MAX, predict_test_output = False):
+# #         folds = StratifiedKFold(n_splits=5, shuffle=False, random_state=2319) # cv n-fold
+#     folds = KFold(n_splits=5, shuffle=False, random_state=2319) # cv n-fold
+#     oof = np.zeros(len(train))
+#     test_pred = np.zeros(len(test))
+#     for n, (trn_idx, val_idx) in enumerate(folds.split(train[features].values, train[target].values)):
+#         X_train, y_train = train.iloc[trn_idx][features], train.iloc[trn_idx][target].values.ravel()
+#         X_valid, y_valid = train.iloc[val_idx][features], train.iloc[val_idx][target].values.ravel()
 
-        mlmodel.set_params(n_estimators = 10000) # initialize n_estimators
-        mlmodel.fit(X_train, y_train, eval_set = [(X_train, y_train), (X_valid, y_valid)], eval_metric = eval_metric, 
-                    early_stopping_rounds = 50, verbose = False) #Fit the algorithm on the data
+#         mlmodel.set_params(n_estimators = 10000) # initialize n_estimators
+#         mlmodel.fit(X_train, y_train, eval_set = [(X_train, y_train), (X_valid, y_valid)], eval_metric = eval_metric, 
+#                     early_stopping_rounds = 50, verbose = False) #Fit the algorithm on the data
 
-        if eval_metric == 'auc': 
-            oof[val_idx] = mlmodel.predict_proba(X_valid)[:,1]
-            test_pred += mlmodel.predict_proba(test[features])[:,1] / folds.n_splits
-        if eval_metric == 'rmse': 
-            oof[val_idx] = mlmodel.predict(X_valid)
-            test_pred += mlmodel.predict(test[features]) / folds.n_splits
+#         if eval_metric == 'auc': 
+#             oof[val_idx] = mlmodel.predict_proba(X_valid)[:,1]
+#             test_pred += mlmodel.predict_proba(test[features])[:,1] / folds.n_splits
+#         if eval_metric == 'rmse': 
+#             oof[val_idx] = mlmodel.predict(X_valid)
+#             test_pred += mlmodel.predict(test[features]) / folds.n_splits
 
-    if eval_metric == 'auc': 
-        valid_score = metrics.roc_auc_score(train[target], oof)
-    if eval_metric == 'rmse': 
-        valid_score = np.sqrt(metrics.mean_squared_error(train[target], oof))
+#     if eval_metric == 'auc': 
+#         valid_score = metrics.roc_auc_score(train[target], oof)
+#     if eval_metric == 'rmse': 
+#         valid_score = np.sqrt(metrics.mean_squared_error(train[target], oof))
 
-    return test_pred, valid_score
+#     return test_pred, valid_score
 
 #--- LigthGBM -----------------------------------------------------------------
 # eval_metric = 'auc'; MIN_MAX = 'max'; mlmodel = LGBMClassifier(learning_rate = 0.1, n_jobs = 4, seed = 123) # classification 
