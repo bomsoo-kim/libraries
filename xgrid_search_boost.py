@@ -1,4 +1,5 @@
-# last update : 04/10/2019
+# Copyright © 2018-2019 Bomsoo Brad Kim, All Rights Reserved.
+# Last Update : 04/14/2019
 import pandas as pd
 import numpy as np
 import xgboost as xgb
