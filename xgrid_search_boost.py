@@ -101,18 +101,18 @@ def user_defined_eval_function(train, test, features, target, mlmodel, eval_metr
 # eval_metric = 'auc'; MIN_MAX = 'max'; mlmodel = LGBMClassifier(learning_rate = 0.1, n_jobs = 4, seed = 123) # classification 
 # eval_metric = 'rmse'; MIN_MAX = 'min'; mlmodel = LGBMRegressor(learning_rate = 0.1, n_jobs = 4, seed = 123) # regression
     
-params_schedule = [
-#     {'learning_rate': ['log', [0.1]]},
+# params_schedule = [
+# #     {'learning_rate': ['log', [0.1]]},
     
-#     {'min_child_weight': ['log', [1, 10, 100, 1000]]}, # uni / log / int
-#     {'gamma': ['log', [0, 0.001, 1, 1000]]}, # uni / log / int
-#     {'subsample': ['uni', [0.2, 0.4, 0.6, 0.8, 1.0]],  # uni / log / int
-#      'colsample_bytree': ['uni', [0.2, 0.4, 0.6, 0.8, 1.0]]},  # uni / log / int
-#     {'reg_alpha': ['log', [0, 0.001, 1, 1000]],
-#      'reg_lambda': ['log', [1, 10, 100, 1000]]},  # uni / log / int
+# #     {'min_child_weight': ['log', [1, 10, 100, 1000]]}, # uni / log / int
+# #     {'gamma': ['log', [0, 0.001, 1, 1000]]}, # uni / log / int
+# #     {'subsample': ['uni', [0.2, 0.4, 0.6, 0.8, 1.0]],  # uni / log / int
+# #      'colsample_bytree': ['uni', [0.2, 0.4, 0.6, 0.8, 1.0]]},  # uni / log / int
+# #     {'reg_alpha': ['log', [0, 0.001, 1, 1000]],
+# #      'reg_lambda': ['log', [1, 10, 100, 1000]]},  # uni / log / int
                        
-#     {'learning_rate': ['log', [0.005, 0.1]]} # uni / log / int
-]
+# #     {'learning_rate': ['log', [0.005, 0.1]]} # uni / log / int
+# ]
 
 #--- XGBoost -----------------------------------------------------------------
 # eval_metric = 'auc'; MIN_MAX = 'max'; mlmodel = XGBClassifier(learning_rate = 0.1, n_jobs = 4, seed = 123) # classification 
