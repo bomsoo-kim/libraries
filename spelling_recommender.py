@@ -13,7 +13,7 @@ def spelling_recommender(word, correct_spellings, len_word_margin = 1):
 correct_spellings = words.words()
 print('total # of words = ', len(correct_spellings))
 
-#-------------------------------------------------------------
+#### Getting Started! ##############################################
 word = 'cormulent' # incorrect spelling
 # word = 'incendenece' # incorrect spelling
 # word = 'validrate' # incorrect spelling
